@@ -3,6 +3,7 @@
 # ======================== #
 from dataclasses import dataclass
 from Enums.Video.Settings import FULLSCREEN
+from Utilities.Logging import Log
 
 @dataclass
 class FullscreenSettings:
@@ -25,9 +26,7 @@ class VideoSettings:
     Fullscreen = FullscreenSettings()
 
     @staticmethod
-    def Lookup(Item):
-        print(f"[VideoSettings] Looking up {str(Item)}...")
-
+    def Calculate(Item):
         # help vars
         _SCALE = VideoSettings.Scale
 
@@ -54,12 +53,12 @@ class VideoSettings:
             return __SCALE * VideoSettings.Width if Dimension.lower() == "width" else __SCALE * VideoSettings.Height # could be mildly dangerous
 
         Items = {
-            "CalculatedW": VS_CalcScreen("WiDtH"),
-            "CalculatedH": VS_CalcScreen("heIGht"),
+            "Width": VS_CalcScreen("WiDtH"),
+            "Height": VS_CalcScreen("heIGht"),
         }
 
         try:
             return Items.get(Item)
         except KeyError as err:
-            print(f"[VS_lookup] ERR while looking up item: {err}")
+            Log.Error(f"Failed to calculate {Item.lower()}: {err}")
             return False

@@ -56,7 +56,7 @@ _P.optionxform = str
 _CUR_PATH:    None | str  = None
 _CUR_SECTION: None | dict = {}
 
-def _PARSE_INI_DATA(Value, AUTOPARSE_TUPLES=True):
+def _PARSE_VALUE(Value, AUTOPARSE_TUPLES=True):
     if not isinstance(Value, str):
         return Value
 
@@ -88,13 +88,11 @@ def _PARSE_INI_DATA(Value, AUTOPARSE_TUPLES=True):
             _PI = []
             for _ITM in _ITMS:
                 try:
-                    _PI.append(_PARSE_INI_DATA(_ITM))
+                    _PI.append(_PARSE_VALUE(_ITM))
                 except (TypeError, ValueError):
                     _PI.append(_ITM)
             return tuple(_PI)
         return tuple(_IN)
-
-    # TODO? add more casting, likely not though
 
     # well it wasn't any of those so :(
     return Value
@@ -114,7 +112,7 @@ def _WRITE_INI_SAFE(Section, Data):
             if _LINE_S.startswith("[") and _LINE_S.endswith("]"):
                 __CUR_SECTION = _LINE_S[1:-1]
 
-            if "=" in _LINE: # probably... hopefully
+            if "=" in _LINE: # probably a key... hopefully
                 _PRTS = _LINE.split("=", 1)
                 _KEY  = _PRTS[0].strip()
                 try:
@@ -123,7 +121,7 @@ def _WRITE_INI_SAFE(Section, Data):
                         if _VAL is not None:
                             _LINE = f"{_KEY}={_VAL}\n"
                 except KeyError:
-                    pass
+                    pass # COPE!
 
             _RECONSTRUCT.append(_LINE)
 
@@ -138,7 +136,7 @@ def UpdateCurrentPath(Path, IgnoreClearWarn = 1): # ignore = 0, clear = 1, warn 
             if IgnoreClearWarn == 1:
                 _P.clear()
             elif IgnoreClearWarn == 2:
-                print("WARNING: ConfigParser already has leftover data, reading multiple files at a time may cause bugs")
+                Log.Warn("ConfigParser already has leftover data, reading multiple files at a time may cause bugs")
             return True
         _CUR_PATH = Path
     return None
@@ -150,7 +148,7 @@ def ReadSection(Section):
     _P.read(_CUR_PATH)
     if not _P.has_section(Section):
         return None
-    return {_KEY: _PARSE_INI_DATA(_VALUE) for _KEY, _VALUE in _P.items(Section)}
+    return {_KEY: _PARSE_VALUE(_VALUE) for _KEY, _VALUE in _P.items(Section)}
 
 def WriteSection(Section, Data):
     UpdateCurrentPath(_CUR_PATH)
@@ -169,7 +167,7 @@ def ReadKey(Section, Key, Default=None):
         _CUR_SECTION = ReadSection(Section)
         if not _CUR_SECTION:
             return Default
-    return _PARSE_INI_DATA(_CUR_SECTION.get(Key, Default))
+    return _PARSE_VALUE(_CUR_SECTION.get(Key, Default))
 
 def WriteKey(Section, Key, Value):
     UpdateCurrentPath(_CUR_PATH)

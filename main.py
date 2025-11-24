@@ -17,7 +17,6 @@ class wtfuh(ERR):
         self.section = section
         self.args = (section,)
 
-
 # ======================== #
 # Checks for the cwd       #
 # ======================== #
@@ -31,10 +30,9 @@ if not os.path.isdir(os.path.join(CWD, _ENGINE)):  # measure 2: cwd has the engi
     raise wtfuh("nice try ankle-biter, but you've yet to face the wrath of my awesome tapping powers!!!!!")
 if not os.path.isdir(os.path.join(CWD, _ENGINE, _SOURCE)):  # final measure: engine folder has the source folder
     # noinspection SpellCheckingInspection
-    raise wtfuh(
-        f"i just send yroue ip adres ({(lambda s: (s.connect(("8.8.8.8", 80)), s.getsockname()[0], s.close())[1])(__import__('socket').socket(__import__('socket').AF_INET, __import__('socket').SOCK_DGRAM))}) to my serber you failur!!@@!111")
+    raise wtfuh(f"i just send yroue ip adres ({(lambda s: (s.connect(("8.8.8.8", 80)), s.getsockname()[0], s.close())[1])(__import__('socket').socket(__import__('socket').AF_INET, __import__('socket').SOCK_DGRAM))}) to my serber you failur!!@@!111") # Gag
 
 sys.path.insert(0, os.path.join(CWD, _ENGINE, _SOURCE))
 
-import Core.HedgeEngine as HedgeEngine
+import HedgeEngine as HedgeEngine
 HedgeEngine.Run()
